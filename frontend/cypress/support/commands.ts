@@ -3,6 +3,22 @@
 // GamesLibrary E2E-Tests.
 // ***********************************************************
 
+/**Neuer Command */
+Cypress.Commands.add('searchForNoResults', () => {
+  cy.intercept('GET', '/api/games/search*').as('search');
+
+  cy.get('.search-bar__input')
+    .clear()
+    .type('EinSpielDasEsGarantiertNichtGibt12345');
+
+  cy.get('.search-bar__button')
+    .click();
+
+  cy.wait('@search');
+});
+
+
+
 /**
  * Öffnet die Anwendung und wartet, bis der initiale
  * GET /api/games-Aufruf abgeschlossen ist (Spiele geladen).
@@ -78,6 +94,7 @@ declare global {
         releaseDate?: string;
       }): Chainable<void>;
       deleteGameByTitle(title: string): Chainable<void>;
+      searchForNoResults(): Chainable<void>;
     }
   }
 }
